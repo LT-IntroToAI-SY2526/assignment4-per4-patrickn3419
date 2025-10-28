@@ -10,7 +10,54 @@ class TTTBoard:
             represent moves by player 'O' and '*'s are spots no one has yet played on
     """
 
-    pass
+    def __init__(self):
+        """Initialize the board with 9 empty spots, marked by asterisks"""
+        self.board = ["*"] * 9
+
+    def __str__(self) -> str:
+        """Returns string representation of the grid in 3x3 form"""
+        rows = [
+            " ".join(self.board[0:3]),
+            " ".join(self.board[3:6]),
+            " ".join(self.board[6:9]),
+        ]
+        return "\n".join(rows)
+
+    def make_move(self, player: str, position: int) -> bool:
+        """Attempt to make a move for player ('X' or 'O') at given position (0–8).
+
+        Returns:
+                True if move was successful, False if invalid or spot already taken.
+        """
+        if position < 0 or position > 8:
+            return False
+        if self.board[position] != "*":
+            return False
+        self.board[position] = player
+        return True
+
+    def has_won(self, player: str) -> bool:
+        """Check if given player has a winning combination."""
+        wins = [
+            [0, 1, 2],  # rows
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],  # columns
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],  # diagonals
+            [2, 4, 6],
+        ]
+        # check to see if all of any of win positions conatain a player
+        return any(all(self.board[i] == player for i in combo) for combo in wins) 
+
+    def game_over(self) -> bool:
+        """Return True if the game is over (win or full board)."""
+        return self.has_won("X") or self.has_won("O") or "*" not in self.board
+
+    def clear(self) -> None:
+        """Reset the board to its initial empty state."""
+        self.board = ["*"] * 9
 
 
 def play_tic_tac_toe() -> None:
@@ -89,4 +136,4 @@ if __name__ == "__main__":
     print("All tests passed!")
 
     # uncomment to play!
-    # play_tic_tac_toe()
+    play_tic_tac_toe()
